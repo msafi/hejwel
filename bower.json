@@ -1,0 +1,22 @@
+{
+  "name": "hejwel",
+  "main": "hejwel.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/msafi/hejwel",
+  "authors": [
+    "MK Safi <msafi@msafi.com>"
+  ],
+  "license": "Public domain",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "kineticjs": "*",
+    "lodash": "*"
+  }
+}
