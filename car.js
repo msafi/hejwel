@@ -1,12 +1,14 @@
 function car() {
   var car = {} // Object that will be manufactured and returned by this function
 
+  car.state = {}
+  car.state.steering = config.car.steering.straight
+  car.state.gearStick = config.car.gearStick.drive
 
-	car.speed = 5
-	car.velocity = {}
-	car.velocity.x = 1
-	car.velocity.y = 0
-	car.angle = 0;
+  car.state.velocity = {}
+  car.state.velocity.x = config.car.speeds.zero
+  car.state.velocity.y = config.car.speeds.zero
+  car.state.angle = 0 // No rotation
 
   car.kineticJs = new Kinetic.Rect()
 
@@ -22,7 +24,10 @@ function car() {
 
   car.move = {}
   car.move.forward = function() {
-    car.kineticJs.move(car.velocity)
+    car.state.velocity.x = car.state.speed * Math.cos(car.state.angle * Math.PI / 180)
+    car.state.velocity.y = car.state.speed * Math.sin(car.state.angle * Math.PI / 180)
+
+    car.kineticJs.move(car.state.velocity)
   }
 
   car.move.back = function() {
@@ -31,26 +36,26 @@ function car() {
 
   car.steer = {}
   car.steer.left = function() {
+    var rotationAngle = car.state.steering
 
-    car.kineticJs.rotate(-5)
-    car.angle = car.angle - 5
-    var ang_rad = car.angle * Math.PI / 180
-    car.velocity.x = car.speed * Math.cos(ang_rad)
-    car.velocity.y = car.speed * Math.sin(ang_rad)
+    car.kineticJs.rotate(rotationAngle)
+
+    car.state.angle = car.state.angle + rotationAngle
+
+    car.state.velocity.x = car.state.speed * Math.cos(car.state.angle * Math.PI / 180)
+    car.state.velocity.y = car.state.speed * Math.sin(car.state.angle * Math.PI / 180)
   }
 
   car.steer.right = function() {
-    car.kineticJs.rotate(5)
-    car.angle = car.angle + 5
-    var ang_rad = car.angle * Math.PI / 180
-    car.velocity.x = car.speed * Math.cos(ang_rad)
-    car.velocity.y = car.speed * Math.sin(ang_rad)
-  }
+    var rotationAngle = car.state.steering
 
-  car.state = {}
-  car.state.speed = config.car.speeds.zero
-  car.state.steering = config.car.steering.straight
-  car.state.gearStick = config.car.gearStick.drive
+    car.kineticJs.rotate(rotationAngle)
+
+    car.state.angle = car.state.angle + rotationAngle
+
+    car.state.velocity.x = car.state.speed * Math.cos(car.state.angle * Math.PI / 180)
+    car.state.velocity.y = car.state.speed * Math.sin(car.state.angle * Math.PI / 180)
+  }
 
   function inputSwitcher(keyCode, keyState) {
     switch (keyCode) {
@@ -78,6 +83,42 @@ function car() {
   document.addEventListener('keyup', function(event) {
     inputSwitcher(event.keyCode, 0)
   })
+
+  car.update = function(frame) {
+    var moveForwardConditions = [
+        car.state.speed === config.car.speeds.one,
+        car.state.gearStick === config.car.gearStick.drive
+    ]
+
+    var moveBackConditions = [
+        car.state.speed === config.car.speeds.one,
+        car.state.gearStick === config.car.gearStick.reverse
+    ]
+
+    var steeringLeftConditions = [
+        car.state.steering === config.car.steering.left
+    ]
+
+    var steeringRightConditions = [
+        car.state.steering === config.car.steering.right
+    ]
+
+    if (_.all(moveForwardConditions)) {
+      car.move.forward()
+    }
+
+    if (_.all(moveBackConditions)) {
+      car.move.back()
+    }
+
+    if (_.all(steeringLeftConditions)) {
+      car.steer.left()
+    }
+
+    if (_.all(steeringRightConditions)) {
+      car.steer.right()
+    }
+  }
 
   return car
 }

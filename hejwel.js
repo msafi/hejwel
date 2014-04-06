@@ -13,39 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Animate
   var animation = new Kinetic.Animation(function(frame) {
-    var moveForwardConditions = [
-      defaultCar.state.speed === config.car.speeds.one,
-      defaultCar.state.gearStick === config.car.gearStick.drive
-    ]
-
-    var moveBackConditions = [
-      defaultCar.state.speed === config.car.speeds.one,
-      defaultCar.state.gearStick === config.car.gearStick.reverse
-    ]
-
-    var steeringLeftConditions = [
-      defaultCar.state.steering === config.car.steering.left
-    ]
-
-    var steeringRightConditions = [
-      defaultCar.state.steering === config.car.steering.right
-    ]
-
-    if (_.all(moveForwardConditions)) {
-      defaultCar.move.forward()
-    }
-
-    if (_.all(moveBackConditions)) {
-      defaultCar.move.back()
-    }
-
-    if (_.all(steeringLeftConditions)) {
-      defaultCar.steer.left()
-    }
-
-    if (_.all(steeringRightConditions)) {
-      defaultCar.steer.right()
-    }
+    defaultCar.update(frame)
   }, layer)
 
   animation.start()
