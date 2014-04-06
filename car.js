@@ -1,10 +1,12 @@
 function car() {
   var car = {} // Object that will be manufactured and returned by this function
 
-  // Car vector
-  car.vector = {}
-  car.vector.x = 1
-  car.vector.y = 0
+
+	car.speed = 5
+	car.velocity = {}
+	car.velocity.x = 1
+	car.velocity.y = 0
+	car.angle = 0;
 
   car.kineticJs = new Kinetic.Rect()
 
@@ -20,7 +22,7 @@ function car() {
 
   car.move = {}
   car.move.forward = function() {
-    car.kineticJs.move(car.vector)
+    car.kineticJs.move(car.velocity)
   }
 
   car.move.back = function() {
@@ -29,17 +31,20 @@ function car() {
 
   car.steer = {}
   car.steer.left = function() {
-    car.vector.x = Math.sin(5 * (Math.PI / -180))
-    car.vector.y = Math.cos(5 * (Math.PI / -180))
-
-    console.log(car.vector)
 
     car.kineticJs.rotate(-5)
+    car.angle = car.angle - 5
+    var ang_rad = car.angle * Math.PI / 180
+    car.velocity.x = car.speed * Math.cos(ang_rad)
+    car.velocity.y = car.speed * Math.sin(ang_rad)
   }
 
   car.steer.right = function() {
-    console.log(car.kineticJs.rotation())
     car.kineticJs.rotate(5)
+    car.angle = car.angle + 5
+    var ang_rad = car.angle * Math.PI / 180
+    car.velocity.x = car.speed * Math.cos(ang_rad)
+    car.velocity.y = car.speed * Math.sin(ang_rad)
   }
 
   car.state = {}
