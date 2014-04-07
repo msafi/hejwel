@@ -8,6 +8,8 @@ function car() {
   car.state.velocity = {}
   car.state.velocity.x = config.car.speeds.zero
   car.state.velocity.y = config.car.speeds.zero
+
+  car.state.speed = config.car.speeds.zero
   car.state.angle = 0 // No rotation
 
   car.kineticJs = new Kinetic.Rect()
@@ -22,10 +24,14 @@ function car() {
   car.kineticJs.offsetX(carWidth / 2)
   car.kineticJs.offsetY(carHeight / 2)
 
-  car.move = {}
-  car.move.forward = function() {
+  car.calculateVelocity = function() {
     car.state.velocity.x = car.state.speed * Math.cos(car.state.angle * Math.PI / 180)
     car.state.velocity.y = car.state.speed * Math.sin(car.state.angle * Math.PI / 180)
+  }
+
+  car.move = {}
+  car.move.forward = function() {
+    car.calculateVelocity()
 
     car.kineticJs.move(car.state.velocity)
   }
@@ -42,8 +48,7 @@ function car() {
 
     car.state.angle = car.state.angle + rotationAngle
 
-    car.state.velocity.x = car.state.speed * Math.cos(car.state.angle * Math.PI / 180)
-    car.state.velocity.y = car.state.speed * Math.sin(car.state.angle * Math.PI / 180)
+    car.calculateVelocity()
   }
 
   car.steer.right = function() {
@@ -53,19 +58,18 @@ function car() {
 
     car.state.angle = car.state.angle + rotationAngle
 
-    car.state.velocity.x = car.state.speed * Math.cos(car.state.angle * Math.PI / 180)
-    car.state.velocity.y = car.state.speed * Math.sin(car.state.angle * Math.PI / 180)
+    car.calculateVelocity()
   }
 
   function inputSwitcher(keyCode, keyState) {
     switch (keyCode) {
       case config.kc.arrows.up:
         car.state.gearStick = config.car.gearStick.drive
-        car.state.speed = (keyState) ? config.car.speeds.one : config.car.speeds.zero
+        car.state.speed = (keyState) ? config.car.speeds.four : config.car.speeds.zero
         break
       case config.kc.arrows.down:
         car.state.gearStick = config.car.gearStick.reverse
-        car.state.speed = (keyState) ? config.car.speeds.one : config.car.speeds.zero
+        car.state.speed = (keyState) ? config.car.speeds.four : config.car.speeds.zero
         break
       case config.kc.arrows.left:
         car.state.steering = (keyState) ? config.car.steering.left : config.car.steering.straight
@@ -86,12 +90,12 @@ function car() {
 
   car.update = function(frame) {
     var moveForwardConditions = [
-        car.state.speed === config.car.speeds.one,
+        car.state.speed > config.car.speeds.zero,
         car.state.gearStick === config.car.gearStick.drive
     ]
 
     var moveBackConditions = [
-        car.state.speed === config.car.speeds.one,
+        car.state.speed > config.car.speeds.zero,
         car.state.gearStick === config.car.gearStick.reverse
     ]
 
