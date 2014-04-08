@@ -1,13 +1,22 @@
-var config = {}
+'use strict'
 
-config.car = {}
-config.car.steering = { sharpLeft: -10, left: -5, straight: 0, right: 5, sharpRight: 10 } // Degrees
-config.car.speeds = { zero: 0, one: 1, two: 2, three: 4, four: 6 } // Pixels?
-config.car.gearStick = { drive: 1, reverse: -1, neutral: 0 } // Direction?
+angular.module('hejwel')
 
-config.kc = {}
-config.kc.arrows = {}
-config.kc.arrows.up = 38
-config.kc.arrows.down = 40
-config.kc.arrows.left = 37
-config.kc.arrows.right = 39
+.constant('config',
+  {
+    car: {
+      steering: { sharpLeft: -10, left: -5, straight: 0, right: 5, sharpRight: 10 }, // Degrees
+      speeds: { zero: 0, one: 1, two: 2, three: 4, four: 6 }, // Pixels?
+      gearStick: { drive: 1, reverse: -1, neutral: 0 }, // Direction?
+    },
+
+    kc: {
+      arrows: {
+        up: 38,
+        down: 40,
+        left: 37,
+        right: 39
+      }
+    }
+  }
+)
