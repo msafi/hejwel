@@ -19,7 +19,7 @@ angular.module('hejwel')
 
     car.kineticJs = new Kinetic.Rect()
 
-    var carHeight = 9
+    var carHeight = 15
     var carWidth = carHeight * 2
 
     car.kineticJs.setHeight(carHeight)
