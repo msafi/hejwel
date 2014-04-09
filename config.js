@@ -16,15 +16,7 @@ angular.module('hejwel')
         down: 40,
         left: 37,
         right: 39
-      },
-      keyA : 65,
-      keyS : 83,
-      keyD : 68,
-      keyF : 70,
-      keyJ : 74,
-      keyK : 75,
-      keyL : 76,
-      semicolon : 186
+      }
     }
   }
 )
