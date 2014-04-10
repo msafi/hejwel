@@ -15,6 +15,7 @@ angular.module('hejwel')
   car.velocity.module = 0
   car.velocity.x = 0
   car.velocity.y = 0
+  car.velocity.maxModule = 0;
   
   car.acceleration = {}
   car.acceleration.module = 0
@@ -23,6 +24,7 @@ angular.module('hejwel')
   
   car.orientation = {}
   car.orientation.angle = 0 // No rotation
+  car.orientation.projection = {}
   car.orientation.projection.x = 1
   car.orientation.projection.y = 0
   
@@ -45,6 +47,10 @@ angular.module('hejwel')
   	car.acceleration.x = newModule * car.orientation.projection.x
   	car.acceleration.y = newModule * car.orientation.projection.y
   }
+  
+  car.f.setMaxSpeed = function(newSpeed) {
+  	car.velocity.maxModule = newSpeed;
+  }
 
   
   //initialisation
@@ -65,8 +71,16 @@ angular.module('hejwel')
   car.kineticJs.offsetY(carHeight / 2)
 
   car.f.move = function() {
-  	if (car.state.gearStick === config.car.gearStick.drive) {
-  	    car.kineticJs.move(car.velocity.x, car.velocity.y)
+  	var newVelocity = car.velocity.module + car.acceleration.module;
+  	if (newVelocity < 0) {
+  		newVelocity = 0
+  	} else if (newVelocity > car.velocity.maxModule) {
+  		newVelocity = car.velocity.maxModule
+  	}
+  	car.f.setVelocity(newVelocity)
+
+  	if (car.state.gearStick == config.car.gearStick.drive) {
+  	    car.kineticJs.move({ x : car.velocity.x, y : car.velocity.y })
   	}
   }
 
@@ -74,6 +88,7 @@ angular.module('hejwel')
     var rotationAngle = car.state.steering
     car.kineticJs.rotate(rotationAngle)
    	car.f.setAngle(car.orientation.angle + rotationAngle)
+   	car.f.setVelocity(car.velocity.module)
   }
 
   function inputSwitcher(keyCode, keyState) {
@@ -81,19 +96,23 @@ angular.module('hejwel')
     switch (keyCode) {
       case config.kc.keyA:
         car.state.gearStick = config.car.gearStick.drive
-        car.f.setVelocity((keyState) ? config.car.speeds.one : config.car.speeds.zero)
+        car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
+        car.f.setMaxSpeed(config.car.speeds.one)
         break
       case config.kc.keyS:
         car.state.gearStick = config.car.gearStick.drive
-        car.f.setVelocity((keyState) ? config.car.speeds.two : config.car.speeds.zero)
+        car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
+        car.f.setMaxSpeed(config.car.speeds.two)
         break
       case config.kc.keyD:
         car.state.gearStick = config.car.gearStick.drive
-        car.f.setVelocity((keyState) ? config.car.speeds.three : config.car.speeds.zero)
+        car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
+        car.f.setMaxSpeed(config.car.speeds.three)
         break
       case config.kc.keyF:
         car.state.gearStick = config.car.gearStick.drive
-        car.f.setVelocity((keyState) ? config.car.speeds.four : config.car.speeds.zero)
+        car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
+        car.f.setMaxSpeed(config.car.speeds.four)
         break
       case config.kc.keyK:
         car.state.steering = (keyState) ? config.car.steering.left : config.car.steering.straight
@@ -124,10 +143,10 @@ angular.module('hejwel')
         car.state.steering !== config.car.steering.straight
     ]
 
-    car.move()
+    car.f.move()
 
     if (_.all(steeringConditions)) {
-      car.steer()
+      car.f.steer()
     }
 
   }
