@@ -94,33 +94,32 @@ angular.module('hejwel')
   function inputSwitcher(keyCode, keyState) {
 
     switch (keyCode) {
-      case config.kc.keyA:
-        car.state.gearStick = config.car.gearStick.drive
+      case config.kc.A:
         car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
         car.f.setMaxSpeed(config.car.speeds.one)
         break
-      case config.kc.keyS:
-        car.state.gearStick = config.car.gearStick.drive
+      case config.kc.S:
         car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
         car.f.setMaxSpeed(config.car.speeds.two)
         break
-      case config.kc.keyD:
-        car.state.gearStick = config.car.gearStick.drive
+      case config.kc.D:
         car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
         car.f.setMaxSpeed(config.car.speeds.three)
         break
-      case config.kc.keyF:
-        car.state.gearStick = config.car.gearStick.drive
+      case config.kc.F:
         car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
         car.f.setMaxSpeed(config.car.speeds.four)
         break
-      case config.kc.keyK:
+      case config.kc.C:
+      	car.f.setAcceleration((keyState) ? config.car.accelerations.braking : config.car.accelerations.free)
+      	break	
+      case config.kc.K:
         car.state.steering = (keyState) ? config.car.steering.left : config.car.steering.straight
         break
-      case config.kc.keyL:
+      case config.kc.L:
         car.state.steering = (keyState) ? config.car.steering.right : config.car.steering.straight
         break
-      case config.kc.keyJ:
+      case config.kc.J:
         car.state.steering = (keyState) ? config.car.steering.sharpLeft : config.car.steering.straight
         break
       case config.kc.semicolon:
@@ -140,7 +139,8 @@ angular.module('hejwel')
   car.update = function(frame) {
 
     var steeringConditions = [
-        car.state.steering !== config.car.steering.straight
+        car.state.steering !== config.car.steering.straight,
+        car.velocity.module > 0
     ]
 
     car.f.move()

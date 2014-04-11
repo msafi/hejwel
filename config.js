@@ -8,7 +8,7 @@ angular.module('hejwel')
       steering: { sharpLeft: -10, left: -5, straight: 0, right: 5, sharpRight: 10 }, // Degrees
       speeds: { zero: 0, one: 2, two: 4, three: 6, four: 8 }, // Pixels?
       gearStick: { drive: 1, reverse: -1, neutral: 0 }, // Direction?
-      accelerations: { zero: 0, free : -0.05, normal: 0.3, braking : -1 }
+      accelerations: { zero: 0, free : -0.02, normal: 0.3, braking : -0.2 }
     },
 
     kc: {
@@ -18,13 +18,14 @@ angular.module('hejwel')
         left: 37,
         right: 39
       },
-      keyA : 65,
-      keyS : 83,
-      keyD : 68,
-      keyF : 70,
-      keyJ : 74,
-      keyK : 75,
-      keyL : 76,
+      A : 65,
+      S : 83,
+      D : 68,
+      F : 70,
+      J : 74,
+      K : 75,
+      L : 76,
+      C : 67,
       semicolon : 186
     }
   }
