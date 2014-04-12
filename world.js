@@ -3,37 +3,37 @@
 angular.module('hejwel')
 
 .directive('hejwelWorld',
-  function(car) {
+  function(car, ground) {
     return {
-      restrict: 'E',
-      link: function($scope, $element, $attributes) {
-        var world = new Kinetic.Stage({ container: $element[0] })
-        var ground = new Kinetic.Layer()
-        var asphalt = new Kinetic.Rect()
+      restrict: 'AE',
+      link: function($scope, $element) {
+        var game
+        var hejwelWorldDomElement = $element[0]
+        var gameObjects = [ground, car]
 
-        var imageObj = new Image();
-        imageObj.onload = function() {
-          asphalt.fillPatternImage(imageObj);
-        };
-        imageObj.src = 'asphalt.jpg';
+        game = new Phaser.Game(
+          window.innerWidth,
+          window.innerHeight,
+          Phaser.AUTO,
+          hejwelWorldDomElement,
+          {
+            preload: function() {
+              _.each(gameObjects, function(gameObject) {
+                gameObject.setup(game)
+              })
+            },
 
-        // Add stuff into each other
-        ground.add(asphalt)
-        ground.add(car.kineticJs)
-        world.add(ground)
+            create: function() {
+              _.each(gameObjects, function(gameObject) {
+                gameObject.create()
+              })
+            },
 
-        // Animate
-        var animation = new Kinetic.Animation(function(frame) {
-          // Configure stage
-          world.setWidth(window.innerWidth)
-          world.setHeight(window.innerHeight)
-          asphalt.setHeight(world.getHeight())
-          asphalt.setWidth(world.getWidth())
-
-          car.update(frame)
-        }, ground)
-
-        animation.start()
+            update: function() {
+              car.update()
+            }
+          }
+        )
       }
     }
   }
