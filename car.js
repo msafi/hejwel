@@ -9,18 +9,20 @@ angular.module('hejwel')
 
   car.state = {}
   car.state.steering = config.car.steering.straight
-  car.state.gearStick = config.car.gearStick.drive
+  car.state.gearStick = config.car.gearStick.forward
 
   car.velocity = {}
   car.velocity.module = 0
   car.velocity.x = 0
   car.velocity.y = 0
-  car.velocity.maxModule = 0;
   
   car.acceleration = {}
   car.acceleration.module = 0
-  car.acceleration.x = 0
-  car.acceleration.y = 0
+  car.acceleration.traction = 0
+  car.acceleration.maxTraction = config.car.rollCoeff * config.car.maxSpeed +
+                               config.car.dragCoeff * config.car.maxSpeed * config.car.maxSpeed;
+  //car.acceleration.x = 0
+  //car.acceleration.y = 0
   
   car.orientation = {}
   car.orientation.angle = 0 // No rotation
@@ -37,26 +39,30 @@ angular.module('hejwel')
   }
   
   car.f.setVelocity = function(newModule) {
+    if (newModule < config.car.minSpeed) {
+        newModule = 0;
+    }
   	car.velocity.module = newModule
   	car.velocity.x = newModule * car.orientation.projection.x
   	car.velocity.y = newModule * car.orientation.projection.y
   }
   
-  car.f.setAcceleration = function(newModule) {
-  	car.acceleration.module = newModule
-  	car.acceleration.x = newModule * car.orientation.projection.x
-  	car.acceleration.y = newModule * car.orientation.projection.y
-  }
-  
-  car.f.setMaxSpeed = function(newSpeed) {
-  	car.velocity.maxModule = newSpeed;
+  car.f.setTraction = function(percent) {
+      car.acceleration.traction = percent * car.acceleration.maxTraction
   }
 
+  car.f.updateAcceleration = function() {
+      var dragForce = config.car.dragCoeff * car.velocity.module * car.velocity.module
+      var rollForce = config.car.rollCoeff * car.velocity.module
+      car.acceleration.module = car.acceleration.traction - dragForce - rollForce
+  	  //car.acceleration.x = newModule * car.orientation.projection.x
+  	  //car.acceleration.y = newModule * car.orientation.projection.y
+  }
   
   //initialisation
   car.f.setAngle(0)
   car.f.setVelocity(0)
-  car.f.setAcceleration(0)
+  car.f.setTraction(config.car.accelerations.zero)
 
   car.kineticJs = new Kinetic.Rect()
 
@@ -71,17 +77,9 @@ angular.module('hejwel')
   car.kineticJs.offsetY(carHeight / 2)
 
   car.f.move = function() {
-  	var newVelocity = car.velocity.module + car.acceleration.module;
-  	if (newVelocity < 0) {
-  		newVelocity = 0
-  	} else if (newVelocity > car.velocity.maxModule) {
-  		newVelocity = car.velocity.maxModule
-  	}
-  	car.f.setVelocity(newVelocity)
-
-  	if (car.state.gearStick == config.car.gearStick.drive) {
-  	    car.kineticJs.move({ x : car.velocity.x, y : car.velocity.y })
-  	}
+ 	car.kineticJs.move({ x : car.velocity.x, y : car.velocity.y })
+    car.f.setVelocity(car.velocity.module + car.acceleration.module)
+    car.f.updateAcceleration()
   }
 
   car.f.steer = function() {
@@ -95,23 +93,19 @@ angular.module('hejwel')
 
     switch (keyCode) {
       case config.kc.A:
-        car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
-        car.f.setMaxSpeed(config.car.speeds.one)
+        car.f.setTraction((keyState) ? config.car.accelerations.one : config.car.accelerations.zero)
         break
       case config.kc.S:
-        car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
-        car.f.setMaxSpeed(config.car.speeds.two)
+        car.f.setTraction((keyState) ? config.car.accelerations.two : config.car.accelerations.zero)
         break
       case config.kc.D:
-        car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
-        car.f.setMaxSpeed(config.car.speeds.three)
+        car.f.setTraction((keyState) ? config.car.accelerations.three : config.car.accelerations.zero)
         break
       case config.kc.F:
-        car.f.setAcceleration((keyState) ? config.car.accelerations.normal : config.car.accelerations.free)
-        car.f.setMaxSpeed(config.car.speeds.four)
+        car.f.setTraction((keyState) ? config.car.accelerations.four : config.car.accelerations.zero)
         break
       case config.kc.C:
-      	car.f.setAcceleration((keyState) ? config.car.accelerations.braking : config.car.accelerations.free)
+      	car.f.setTraction((keyState) ? config.car.accelerations.braking : config.car.accelerations.zero)
       	break	
       case config.kc.K:
         car.state.steering = (keyState) ? config.car.steering.left : config.car.steering.straight

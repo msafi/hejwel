@@ -6,9 +6,12 @@ angular.module('hejwel')
   {
     car: {
       steering: { sharpLeft: -10, left: -5, straight: 0, right: 5, sharpRight: 10 }, // Degrees
-      speeds: { zero: 0, one: 2, two: 4, three: 6, four: 8 }, // Pixels?
-      gearStick: { drive: 1, reverse: -1, neutral: 0 }, // Direction?
-      accelerations: { zero: 0, free : -0.02, normal: 0.3, braking : -0.2 }
+      accelerations: { zero: 0, one: 0.25, two: 0.5, three: 0.75, four: 1, braking: -0.5 }, // Throttle position
+      gearStick: { forward: 1, reverse: -1 }, // Direction
+      maxSpeed: 20,
+      minSpeed: 0.1,
+      dragCoeff: 0.003,
+      rollCoeff: 0.005
     },
 
     kc: {
