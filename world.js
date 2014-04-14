@@ -28,6 +28,7 @@ angular.module('hejwel')
 
             create: function() {
               game.time.advancedTiming = true
+              game.world.setBounds(0, 0, 3400, 3400);
 
               _.each(gameObjects, function(gameObject) {
                 gameObject.create()

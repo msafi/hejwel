@@ -16,7 +16,7 @@ angular.module('hejwel')
     }
 
     car.create = function() {
-      car.p = game.add.sprite(game.world.width / 2, game.world.height / 2, 'car')
+      car.p = game.add.sprite(100, game.world.height / 2, 'car')
       game.physics.enable(car.p)
       controls = game.input.keyboard.createCursorKeys()
       car.p.anchor.setTo(0.6, 0.5);
