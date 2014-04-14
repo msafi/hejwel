@@ -29,7 +29,7 @@ angular.module('hejwel')
       car.p.body.speed = 0
 
       if (controls.up.isDown) {
-        var speed = 500 // pixels per frame.
+        var speed = 1000 // pixels per frame.
         game.physics.arcade.velocityFromAngle(car.p.angle, speed, car.p.body.velocity);
 
         if (controls.left.isDown) {
