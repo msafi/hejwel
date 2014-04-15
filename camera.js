@@ -13,13 +13,13 @@ angular.module('hejwel')
 
     camera.create = angular.noop
 
-    camera.update = function() {
-      var seventyPercentTheWidth = game.world.width * 0.7
-      var thirtyPercentTheWidth = game.world.width * 0.3
-      var seventyPercentTheHeight = game.world.height * 0.7
-      var thirtyPercentTheHeight = game.world.height * 0.3
+    camera.render = function() {
+      var seventyPercentTheWidth = Math.round(game.world.width * 0.7)
+      var thirtyPercentTheWidth = Math.round(game.world.width * 0.3)
+      var seventyPercentTheHeight = Math.round(game.world.height * 0.7)
+      var thirtyPercentTheHeight = Math.round(game.world.height * 0.3)
 
-      if (car.p.body.speed > 0) {
+      if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
         if (car.p.x > seventyPercentTheWidth) {
           ground.p.tilePosition.x -= car.p.x - seventyPercentTheWidth
           car.p.x = seventyPercentTheWidth

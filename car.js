@@ -26,7 +26,7 @@ angular.module('hejwel')
       car.p.body.velocity.x = 0
       car.p.body.velocity.y = 0
       car.p.body.angularVelocity = 0
-      car.p.body.speed = 0
+//      car.p.body.speed = 0
 
       if (controls.up.isDown) {
         var speed = 1000 // pixels per frame.
