@@ -3,7 +3,7 @@
 angular.module('hejwel')
 
 .service('car',
-  function(config) {
+  function(config, ground) {
     var game
     var controls
 
@@ -16,8 +16,9 @@ angular.module('hejwel')
     }
 
     car.create = function() {
-      car.p = game.add.sprite(game.world.width / 2, game.world.height / 2, 'car')
+      car.p = game.add.sprite(200, game.world.height / 2, 'car')
       game.physics.enable(car.p)
+      car.p.body.collideWorldBounds = true
       controls = game.input.keyboard.createCursorKeys()
       car.p.anchor.setTo(0.6, 0.5);
     }
@@ -26,10 +27,9 @@ angular.module('hejwel')
       car.p.body.velocity.x = 0
       car.p.body.velocity.y = 0
       car.p.body.angularVelocity = 0
-//      car.p.body.speed = 0
 
       if (controls.up.isDown) {
-        var speed = 1000 // pixels per frame.
+        var speed = 500 // pixels per second.
         game.physics.arcade.velocityFromAngle(car.p.angle, speed, car.p.body.velocity);
 
         if (controls.left.isDown) {
