@@ -21,6 +21,7 @@ angular.module('hejwel')
       controls = game.input.keyboard.createCursorKeys()
       car.p.anchor.setTo(0.3, 0.5);
 
+<<<<<<< HEAD
         car.p.body.velocity.x = 0
         car.p.body.velocity.y = 0
         car.p.body.angularVelocity = 0
@@ -97,6 +98,13 @@ angular.module('hejwel')
                     }
                 }
             }
+=======
+    car.update = function() {
+      car.p.body.velocity.x = 0
+      car.p.body.velocity.y = 0
+      car.p.body.angularVelocity = 0
+//      car.p.body.speed = 0
+>>>>>>> fef8d1509b5cbe0b69f8767ef46e78e5714c4c32
 
         }
     }
