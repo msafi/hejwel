@@ -9,7 +9,7 @@ angular.module('hejwel')
 
     ground.setup = function(game_) {
       game = game_
-      game.load.image('asphalt', 'assets/asphalt.jpg')
+      game.load.image('asphalt', 'assets/asphalt3.jpg')
     }
 
     ground.create = function() {

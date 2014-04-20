@@ -121,13 +121,13 @@ angular.module('hejwel')
         car.f.setTraction(config.car.accelerations.zero);
       }
 
-      if (isDown(Phaser.Keyboard.J)) {
+      if (isDown(Phaser.Keyboard.J) || isDown(Phaser.Keyboard.LEFT)) {
         car.f.setAngularAcceleration(config.car.angularAccelerations.sharpLeft);
-      } else if (isDown(186)) {
+      } else if (isDown(186) || isDown(Phaser.Keyboard.RIGHT)) {
         car.f.setAngularAcceleration(config.car.angularAccelerations.sharpRight);
-      } else if (isDown(Phaser.Keyboard.K) || isDown(Phaser.Keyboard.LEFT)) {
+      } else if (isDown(Phaser.Keyboard.K)) {
         car.f.setAngularAcceleration(config.car.angularAccelerations.left);
-      } else if (isDown(Phaser.Keyboard.L) || isDown(Phaser.Keyboard.RIGHT)) {
+      } else if (isDown(Phaser.Keyboard.L)) {
         car.f.setAngularAcceleration(config.car.angularAccelerations.right);
       } else {
         car.f.setAngularAcceleration(config.car.angularAccelerations.straight);

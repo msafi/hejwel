@@ -26,7 +26,7 @@ angular.module('hejwel')
 
       gearStick: { forward: 1, reverse: -1 }, // Direction
 
-      maxSpeed: 1000,
+      maxSpeed: 700,
 
       minSpeed: 1,
 

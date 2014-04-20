@@ -27,7 +27,6 @@ angular.module('hejwel')
             },
 
             create: function() {
-              game.world.setBounds(0, 0, 900000, 900000)
               game.time.advancedTiming = true
 
               _.each(gameObjects, function(gameObject) {
@@ -45,6 +44,7 @@ angular.module('hejwel')
               game.debug.text('FPS: ' + game.time.fps, 5, 120, color, font)
 
               car.update()
+              camera.update()
             }
           }
         )
