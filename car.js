@@ -2,7 +2,7 @@
 
 angular.module('hejwel')
 
-  .service('car',
+.service('car',
   function(config) {
     var game
 
@@ -43,7 +43,7 @@ angular.module('hejwel')
           newModule = 0;
         }
         car.velocity_module = newModule;
-        game.physics.arcade.velocityFromAngle(car.p.angle, newModule, car.p.body.velocity);
+        car.p.body.velocity = game.physics.arcade.velocityFromAngle(car.p.angle, newModule, car.p.body.velocity)
       }
       car.f.setTraction = function(percent) {
         car.acceleration.traction = percent * car.acceleration.maxTraction
