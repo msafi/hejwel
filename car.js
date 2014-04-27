@@ -27,8 +27,11 @@ angular.module('hejwel')
       car.acceleration.module = 0
       car.velocity_module = 0
       car.acceleration.traction = 0
-      car.acceleration.maxTraction = config.car.rollCoeff * config.car.maxSpeed +
-        config.car.dragCoeff * config.car.maxSpeed * config.car.maxSpeed;
+      car.acceleration.maxTraction = config.car.rollCoeff
+                                   * config.car.maxSpeed
+                                   + config.car.dragCoeff
+                                   * config.car.maxSpeed
+                                   * config.car.maxSpeed
 
       car.angularMovement = {}
       car.angularMovement.velocity = 0
