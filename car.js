@@ -5,7 +5,6 @@ angular.module('hejwel')
   .service('car',
   function(config) {
     var game
-    var controls
 
     var car = {}
     car.p = {}
@@ -16,16 +15,10 @@ angular.module('hejwel')
     }
 
     car.create = function() {
-      car.p = game.add.sprite(200, game.world.height / 2, 'car')
+      car.p = game.add.sprite(game.world.width / 2, game.world.height / 2, 'car')
       game.physics.enable(car.p)
       car.p.body.collideWorldBounds = true
-      controls = game.input.keyboard.createCursorKeys()
-      car.p.anchor.setTo(0.3, 0.5);
-
-      car.p.body.velocity.x = 0
-      car.p.body.velocity.y = 0
-      car.p.body.angularVelocity = 0
-      car.p.body.speed = 0
+//      car.p.anchor.setTo(0.3, 0.5)
 
       car.state = {}
       car.state.gearStick = config.car.gearStick.forward

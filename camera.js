@@ -3,7 +3,7 @@
 angular.module('hejwel')
 
 .service('camera',
-  function(car, ground) {
+  function(car, ground, config) {
     var camera = {}
     var game
 
@@ -11,36 +11,40 @@ angular.module('hejwel')
       game = game_
     }
 
-    camera.create = angular.noop
+    camera.create = function() {
+      game.camera.focusOnXY(450000, 450000)
+    }
 
     camera.update = function() {
-      var seventyPercentTheWidth = Math.round((game.world.width * 0.7))
-      var thirtyPercentTheWidth = Math.round(game.world.width * 0.3)
-      var seventyPercentTheHeight = Math.round(game.world.height * 0.7)
-      var thirtyPercentTheHeight = Math.round(game.world.height * 0.3)
+      var currentSpeed = car.p.body.speed
 
-      if (car.p.body.speed > 0) {
-        if (car.p.body.position.x > seventyPercentTheWidth) {
-          ground.p.tilePosition.x -= car.p.body.velocity.x * game.time.physicsElapsed
-          car.p.body.position.x = seventyPercentTheWidth
-        }
+      function cameraDistance() {
+        var maxSpeed = config.car.maxSpeed
+        var speedPercentage = currentSpeed / maxSpeed
+        var halfScreenWidth = window.innerWidth / 2
+        var halfScreenHeight = window.innerHeight / 2
 
-        if (car.p.body.position.x < thirtyPercentTheWidth) {
-          ground.p.tilePosition.x -= car.p.body.velocity.x * game.time.physicsElapsed
-          car.p.body.position.x = thirtyPercentTheWidth
-        }
+        var useHeight = (halfScreenHeight < halfScreenWidth) ? true : false
 
-        if (car.p.body.position.y > seventyPercentTheHeight) {
-          ground.p.tilePosition.y -= car.p.body.velocity.y * game.time.physicsElapsed
-          car.p.body.position.y = seventyPercentTheHeight
-        }
-
-        if (car.p.body.position.y < thirtyPercentTheHeight) {
-          ground.p.tilePosition.y -= car.p.body.velocity.y * game.time.physicsElapsed
-          car.p.body.position.y = thirtyPercentTheHeight
+        if (useHeight) {
+          return halfScreenHeight * speedPercentage
+        } else {
+          return halfScreenWidth * speedPercentage
         }
       }
+
+      if (currentSpeed > 0) {
+        ground.p.tilePosition.x -= Math.round(car.p.body.velocity.x * game.time.physicsElapsed)
+        ground.p.tilePosition.y -= Math.round(car.p.body.velocity.y * game.time.physicsElapsed)
+
+        game.camera.focusOnXY(
+          Math.round(cameraDistance() * Math.cos(game.math.degToRad(car.p.angle)) + car.p.body.position.x),
+          Math.round(cameraDistance() * Math.sin(game.math.degToRad(car.p.angle)) + car.p.body.position.y)
+        )
+      }
     }
+
+//    camera.update = angular.noop
 
     return camera
   })

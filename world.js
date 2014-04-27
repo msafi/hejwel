@@ -28,6 +28,7 @@ angular.module('hejwel')
 
             create: function() {
               game.time.advancedTiming = true
+              game.world.setBounds(0, 0, 900000, 900000)
 
               _.each(gameObjects, function(gameObject) {
                 gameObject.create()
@@ -35,6 +36,11 @@ angular.module('hejwel')
             },
 
             update: function() {
+              car.update()
+              camera.update()
+            },
+
+            render: function() {
               var font = '14px Courier'
               var color = 'rgb(255,255,255)'
 
@@ -42,9 +48,7 @@ angular.module('hejwel')
               game.debug.spriteInfo(car.p, 5, 20)
               game.debug.text('Speed: ' + car.getSpeed() + ' km/h', 5, 100, color, font)
               game.debug.text('FPS: ' + game.time.fps, 5, 120, color, font)
-
-              car.update()
-              camera.update()
+              game.debug.cameraInfo(game.camera, 5, 250)
             }
           }
         )
