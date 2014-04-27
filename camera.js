@@ -12,7 +12,7 @@ angular.module('hejwel')
     }
 
     camera.create = function() {
-      game.camera.focusOnXY(450000, 450000)
+      game.camera.focusOn(car.p)
     }
 
     camera.update = function() {
