@@ -22,11 +22,13 @@ angular.module('hejwel')
 
       angularReset: 1 * Math.PI / 180,
 
-      accelerations: { zero: 0, one: 0.25, two: 0.5, three: 0.75, four: 1, braking: -0.8 }, // Throttle position
+      pedalLevels: { 0: 0, 1: 0.25, 2: 0.5, 3: 0.75, 4: 1 }, // Throttle position
+
+      brake: -1,
 
       gearStick: { forward: 1, reverse: -1 }, // Direction
 
-      maxSpeed: 700,
+      maxSpeed: 1000,
 
       minSpeed: 1,
 
