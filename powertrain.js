@@ -6,11 +6,7 @@ angular.module('hejwel')
   function(config) {
     var powertrain = {}
 
-    var maxTraction = config.car.rollCoeff
-                    * config.car.maxSpeed
-                    + config.car.dragCoeff
-                    * config.car.maxSpeed
-                    * config.car.maxSpeed
+    var maxTraction = 4
 
     powertrain.getTraction = function(powerPercentage) {
       return powerPercentage * maxTraction

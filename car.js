@@ -27,15 +27,15 @@ angular.module('hejwel')
 
     car.setVelocity = function(level) {
       // Gas pedal or brake pedal?
-      level = (level >= 0) ? config.car.pedalLevels[level] : config.car.brake
+      var pedalLevel = (level >= 0) ? config.car.pedalLevels[level] : config.car.brake
 
       car.state.velocity += car.state.acceleration
 
-      car.state.traction = powertrain.getTraction(level)
+      car.state.traction = powertrain.getTraction(pedalLevel)
       car.state.acceleration = drivingEnvironment.getPossibleAcceleration(car.state)
 
       // Even if acceleration brought velocity to below zero (i.e. braking), actual velocity cannot be lower than zero.
-      if (car.state.velocity < config.car.minSpeed)
+      if (car.state.velocity < 0)
         car.state.velocity = 0
     }
 
@@ -72,4 +72,5 @@ angular.module('hejwel')
     }
 
     return car
-  })
+  }
+)
