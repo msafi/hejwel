@@ -12,7 +12,6 @@ angular.module('hejwel')
     }
 
     camera.create = function() {
-      game.camera.focusOn(car.p)
       game.camera.follow(car.p, Phaser.Camera.FOLLOW_TOPDOWN)
     }
 
