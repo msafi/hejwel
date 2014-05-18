@@ -121,7 +121,7 @@ angular.module('hejwel')
       if (level >= 0) {
       	car.state.traction = powertrain.getTraction(car, pedalLevel)
       } else {
-        car.state.traction = - config.car.frictionCoefficient * config.car.mass * 9.8;
+        car.state.traction = - config.car.frictionCoefficient * 9.8;
       }
       car.state.acceleration = drivingEnvironment.getPossibleAcceleration(car.state)
 
