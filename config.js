@@ -46,7 +46,9 @@ angular.module('hejwel')
 
       dragCoeff: 0.00000004,
 
-      rollCoeff: 0.0005
+      rollCoeff: 0.0005,
+      
+      frictionCoefficient: 0.8
     }
   }
 )

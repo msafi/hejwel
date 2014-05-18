@@ -118,7 +118,11 @@ angular.module('hejwel')
       car.state.velocity += car.state.acceleration
       automaticTransmission()
       computeRpm()
-      car.state.traction = powertrain.getTraction(car, pedalLevel)
+      if (level >= 0) {
+      	car.state.traction = powertrain.getTraction(car, pedalLevel)
+      } else {
+        car.state.traction = - config.car.frictionCoefficient * config.car.mass * 9.8;
+      }
       car.state.acceleration = drivingEnvironment.getPossibleAcceleration(car.state)
 
       // Even if acceleration brought velocity to below zero (i.e. braking), actual velocity cannot be lower than zero.
