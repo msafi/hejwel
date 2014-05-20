@@ -48,8 +48,8 @@ angular.module('hejwel')
               game.debug.spriteInfo(car.p, 5, 20)
               game.debug.text('Speed: ' + car.getSpeed() + ' km/h', 5, 100, color, font)
               game.debug.text('FPS: ' + game.time.fps, 5, 120, color, font)
-                game.debug.text('RPM: ' + Math.round(car.state.rpm), 5, 140, color, font)
-                game.debug.text('Gear: ' + car.state.gear, 5, 160, color, font)
+                game.debug.text('RPM: ' + Math.round(car.powertrain.rpm), 5, 140, color, font)
+                game.debug.text('Gear: ' + car.powertrain.gear, 5, 160, color, font)
               game.debug.cameraInfo(game.camera, 5, 250)
             }
           }

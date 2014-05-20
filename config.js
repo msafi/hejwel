@@ -24,15 +24,13 @@ angular.module('hejwel')
 
       pedalLevels: { 0: 0, 1: 0.25, 2: 0.5, 3: 0.75, 4: 1 }, // Throttle position
 
-        firstGearForceLevel: 0.1,
+      firstGearForceLevel: 0.1,
 
       gearRatios: { g1 : 2.66, g2 : 1.78, g3 : 1.30, g4 : 1.0, g5 : 0.74, g6 : 0.50, gR : 2.90, dR : 3.42 },
 
       wheelRadius : 0.3,
 
       switchRpm : 5000,
-
-      histDeltaVelocity : 10 * 20 / 3.6,
 
       mass : 1500,
 
