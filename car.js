@@ -36,17 +36,15 @@ angular.module('hejwel')
       },
 
       setVelocity: function(level) {
-        // Gas pedal or brake pedal?
-        var pedalLevel = (level >= 0) ? this.pedalLevels[level] : -1
-
         this.state.velocity += this.state.acceleration
         powertrain.automaticTransmission()
 
         if (level >= 0) {
-          this.state.traction = powertrain.getTraction(pedalLevel)
+          this.state.traction = powertrain.getTraction(this.pedalLevels[level])
         } else {
           this.state.traction = -this.frictionCoefficient * 9.8;
         }
+
         this.state.acceleration = drivingEnvironment.getPossibleAcceleration(this.state)
 
         // Even if acceleration brought velocity to below zero (i.e. braking), actual velocity cannot be lower than zero.

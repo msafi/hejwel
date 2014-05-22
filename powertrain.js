@@ -15,7 +15,7 @@ angular.module('hejwel')
 
       switchRpm: 5000,
 
-      firstGearForceLevel: 0.1,
+      firstGearForceLevel: 0,
 
       install: function(newCar) {
         car = newCar
@@ -44,6 +44,8 @@ angular.module('hejwel')
       },
 
       automaticTransmission: function() {
+        var gearRatio
+
         //limit at max speed
         if (this.gear < 6) {
           if (car.state.velocity > this.getGearMaxVelocity()) {
@@ -59,9 +61,13 @@ angular.module('hejwel')
         }
 
         // Compute RPM
-        var gearRatio = this.gearRatios.dR * this.gearRatios[this.gear];
+        gearRatio = this.gearRatios.dR * this.gearRatios[this.gear];
 
-        this.rpm = car.getSpeedMps() * gearRatio * 60 / (2 * Math.PI * car.wheelRadius);
+        this.rpm
+          = car.getSpeedMps()
+          * gearRatio
+          * 60
+          / (2 * Math.PI * car.wheelRadius)
 
         if (this.rpm < 1000) {
           this.rpm = 1000;
