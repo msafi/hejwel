@@ -17,10 +17,19 @@ angular.module('hejwel')
 
       frictionCoefficient: 0.8,
 
+      fLatFactor: 10,
+
+      fLatMax: 5,
+
+      angularInertia: 100,
+
       state: {
         traction: 0,
         velocity: 0,
         acceleration: 0,
+        angularVelocity: 0,
+        angularAcceleration: 0,
+        wheelAngle: 0
       },
 
       setup: function(game_) {
@@ -52,6 +61,30 @@ angular.module('hejwel')
           this.state.velocity = 0
       },
 
+      updateAngulars: function() {
+        this.p.angle += this.state.angularVelocity;
+        this.state.angularVelocity += this.state.angularAcceleration;
+
+        var alphaFront = 0;
+        var alphaRear = 0;
+        if (this.state.velocity != 0) {
+          var alphaFront = Math.atan(this.state.angularVelocity / this.state.velocity) - this.state.wheelAngle;
+          var alphaRear = Math.atan(-this.state.angularVelocity / this.state.velocity);
+        }
+        var fLatFront = this.fLatFactor * alphaFront;
+        var fLatRear = this.fLatFactor * alphaRear;
+        if (fLatFront > this.fLatMax) {
+          fLatFront = this.fLatMax;
+        }
+        if (fLatRear > this.fLatMax) {
+          fLatRear = this.fLatMax;
+        }
+
+        var torque = Math.cos(this.state.wheelAngle * Math.PI / 180) * fLatFront - fLatRear;
+        torque = this.state.wheelAngle;
+        this.state.angularAcceleration = torque / this.angularInertia
+      },
+
       update: function() {
         var isDown = game.input.keyboard.isDown.bind(game.input.keyboard)
 
@@ -69,6 +102,15 @@ angular.module('hejwel')
           this.setVelocity(0)
         }
 
+        if (isDown(Phaser.Keyboard.LEFT)) {
+          this.state.wheelAngle = -15;
+        } else if (isDown(Phaser.Keyboard.RIGHT)) {
+          this.state.wheelAngle = 15;
+        } else {
+          this.state.wheelAngle = 0;
+        }
+
+        this.updateAngulars()
         this.p.body.velocity = game.physics.arcade.velocityFromAngle(this.p.angle, this.state.velocity)
       },
 
