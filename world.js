@@ -50,6 +50,10 @@ angular.module('hejwel')
               game.debug.text('FPS: ' + game.time.fps, 5, 120, color, font)
                 game.debug.text('RPM: ' + Math.round(car.powertrain.rpm), 5, 140, color, font)
                 game.debug.text('Gear: ' + car.powertrain.gear, 5, 160, color, font)
+                if (car.state.sideSlipping) {
+                    game.debug.text("SIDE SLIPPING!", 5, 180, color, font)
+                }
+                game.debug.text("aLat: " + car.state.sideSlippingAcceleration, 5, 200, color, font)
               game.debug.cameraInfo(game.camera, 5, 250)
             }
           }

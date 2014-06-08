@@ -47,7 +47,11 @@ angular.module('hejwel')
         angularAcceleration: 0,
         steeringLevel: 0,//this.steeringLevels.none,
         steeringDirection: 0,//this.steeringDirections.none,
-        wheelAngle: 0
+        wheelAngle: 0,
+        sideAngle: 0,
+        sideSlipping: false,
+        sideSlippingVelocity: 0,
+        sideSlippingAcceleration: 0
       },
 
       setup: function(game_) {
@@ -78,10 +82,36 @@ angular.module('hejwel')
         if (this.state.velocity < 0) {
             this.state.velocity = 0
         }
+      },
 
-        this.state.longVelocity = this.state.velocity * Math.cos(this.state.wheelAngle / 180 * Math.PI)
-        this.state.latVelocity = this.state.velocity * Math.sin(this.state.wheelAngle / 180 * Math.PI)
+      updateLateralMovement: function() {
+        if (this.state.longVelocity == 0 || this.state.wheelAngle == 0) {
+            return
+        }
+        var aLat = this.state.longVelocity * this.state.longVelocity * Math.tan(Math.abs(this.state.sideAngle) / 180 * Math.PI)
+            / (this.centerToBack + this.centerToFront) / 10000 - 9.8 * this.frictionCoefficient;
 
+        if (aLat > 0) {
+            this.state.sideSlippingAcceleration = aLat;
+            this.state.sideSlipping = true;
+        } else {
+            this.state.sideSlippingAcceleration = 0; //debug only, replace with =0
+            this.state.sideSlipping = false;
+        }
+        this.updateSideSlippingVelocity()
+      },
+
+      updateSideSlippingVelocity: function() {
+        if (this.state.sideSlipping) {
+            this.state.sideSlippingVelocity += this.state.sideSlippingAcceleration;
+        } else {
+            if (this.state.sideSlippingVelocity > 0) {
+                this.state.sideSlippingVelocity -= 9.8 * this.frictionCoefficient;
+                if (this.state.sideSlippingVelocity <= 0.1) {
+                    this.state.sideSlippingVelocity = 0;
+                }
+            }
+        }
       },
 
       /*updateAngulars: function() {
@@ -121,6 +151,20 @@ angular.module('hejwel')
               }
           } else {
               this.increaseWheelAngle();
+          }
+
+          this.state.longVelocity = this.state.velocity * Math.cos(this.state.wheelAngle / 180 * Math.PI)
+          this.state.latVelocity = this.state.velocity * Math.sin(this.state.wheelAngle / 180 * Math.PI)
+
+          if (this.state.latVelocity > 0) {
+              this.state.latVelocity -= this.state.sideSlippingVelocity;
+          } else if (this.state.latVelocity < 0) {
+              this.state.latVelocity += this.state.sideSlippingVelocity;
+          }
+          if (this.state.longVelocity != 0) {
+              this.state.sideAngle = Math.atan(this.state.latVelocity / this.state.longVelocity) / Math.PI * 180;
+          } else {
+              this.state.sideAngle = this.state.wheelAngle;
           }
       },
 
@@ -189,8 +233,10 @@ angular.module('hejwel')
         }
 
         //this.updateAngulars()
+
         this.updateWheelAngle()
-        this.p.body.velocity = game.physics.arcade.velocityFromAngle(this.p.angle, this.state.longVelocity)
+        this.updateLateralMovement()
+        this.p.body.velocity = game.physics.arcade.velocityFromAngle(this.p.angle + this.state.sideAngle, this.state.longVelocity)
         this.rotate()
       },
 
