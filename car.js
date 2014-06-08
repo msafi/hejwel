@@ -11,11 +11,25 @@ angular.module('hejwel')
 
       pedalLevels: { 0: 0, 1: 0.25, 2: 0.5, 3: 0.75, 4: 1 },
 
+      steeringLevels: { none: 0, normal: 20, sharp: 40 },
+
+      steeringDirections: { none: 0, left: 1, right: 2 },
+
+      minimumWheelAngle: 0.01,
+
+      reducingWheelAngularVelocity: 0.6,
+
+      steeringWheelAngularVelocity: 0.6,
+
       wheelRadius: 0.3,
 
       mass: 1500,
 
       frictionCoefficient: 0.8,
+
+      centerToFront: 1,
+
+      centerToBack: 0.8,
 
       fLatFactor: 10,
 
@@ -26,9 +40,13 @@ angular.module('hejwel')
       state: {
         traction: 0,
         velocity: 0,
+        longVelocity: 0,
+        latVelocity: 0,
         acceleration: 0,
         angularVelocity: 0,
         angularAcceleration: 0,
+        steeringLevel: 0,//this.steeringLevels.none,
+        steeringDirection: 0,//this.steeringDirections.none,
         wheelAngle: 0
       },
 
@@ -57,11 +75,16 @@ angular.module('hejwel')
         this.state.acceleration = drivingEnvironment.getPossibleAcceleration(this.state)
 
         // Even if acceleration brought velocity to below zero (i.e. braking), actual velocity cannot be lower than zero.
-        if (this.state.velocity < 0)
-          this.state.velocity = 0
+        if (this.state.velocity < 0) {
+            this.state.velocity = 0
+        }
+
+        this.state.longVelocity = this.state.velocity * Math.cos(this.state.wheelAngle / 180 * Math.PI)
+        this.state.latVelocity = this.state.velocity * Math.sin(this.state.wheelAngle / 180 * Math.PI)
+
       },
 
-      updateAngulars: function() {
+      /*updateAngulars: function() {
         this.p.angle += this.state.angularVelocity;
         this.state.angularVelocity += this.state.angularAcceleration;
 
@@ -84,6 +107,52 @@ angular.module('hejwel')
         torque = this.state.wheelAngle;
         this.state.angularAcceleration = torque / this.angularInertia
       },
+      */
+
+      rotate: function() {
+          this.p.angle += this.state.angularVelocity;
+          this.state.angularVelocity = this.state.latVelocity / (this.centerToBack + this.centerToFront) / 20;
+      },
+
+      updateWheelAngle: function() {
+          if (this.state.steeringDirection == this.steeringLevels.none) {
+              if (this.state.wheelAngle != 0) {
+                  this.reduceWheelAngle();
+              }
+          } else {
+              this.increaseWheelAngle();
+          }
+      },
+
+      reduceWheelAngle: function() {
+          if (this.state.wheelAngle > 0) {
+              this.state.wheelAngle -= this.reducingWheelAngularVelocity;
+              if (this.state.wheelAngle < this.minimumWheelAngle) {
+                  this.state.wheelAngle = 0;
+              }
+          } else {
+              this.state.wheelAngle += this.reducingWheelAngularVelocity;
+              if (this.state.wheelAngle > -this.minimumWheelAngle) {
+                  this.state.wheelAngle = 0;
+              }
+          }
+      },
+
+      increaseWheelAngle: function() {
+          var maxAngle = this.state.steeringLevel;
+          if (this.state.steeringDirection == this.steeringDirections.right) {
+              this.state.wheelAngle += this.steeringWheelAngularVelocity;
+              if (this.state.wheelAngle > maxAngle) {
+                  this.state.wheelAngle = maxAngle;
+              }
+          } else if (this.state.steeringDirection == this.steeringDirections.left) {
+              this.state.wheelAngle -= this.steeringWheelAngularVelocity;
+              if (this.state.wheelAngle < -maxAngle) {
+                  this.state.wheelAngle = -maxAngle;
+              }
+          }
+
+      },
 
       update: function() {
         var isDown = game.input.keyboard.isDown.bind(game.input.keyboard)
@@ -102,16 +171,27 @@ angular.module('hejwel')
           this.setVelocity(0)
         }
 
-        if (isDown(Phaser.Keyboard.LEFT)) {
-          this.state.wheelAngle = -15;
-        } else if (isDown(Phaser.Keyboard.RIGHT)) {
-          this.state.wheelAngle = 15;
+        if (isDown(Phaser.Keyboard.LEFT) || isDown(Phaser.Keyboard.J)) {
+          this.state.steeringLevel = this.steeringLevels.normal;
+          this.state.steeringDirection = this.steeringDirections.left;
+        } else if (isDown(Phaser.Keyboard.RIGHT) || isDown(Phaser.Keyboard.K)) {
+          this.state.steeringLevel = this.steeringLevels.normal;
+          this.state.steeringDirection = this.steeringDirections.right;
+        } else if (isDown(Phaser.Keyboard.H)) {
+          this.state.steeringLevel = this.steeringLevels.sharp;
+          this.state.steeringDirection = this.steeringDirections.left;
+        } else if (isDown(Phaser.Keyboard.L)) {
+            this.state.steeringLevel = this.steeringLevels.sharp;
+            this.state.steeringDirection = this.steeringDirections.right;
         } else {
-          this.state.wheelAngle = 0;
+          this.state.steeringLevel = this.steeringLevels.none;
+          this.state.steeringDirection = this.steeringDirections.none;
         }
 
-        this.updateAngulars()
-        this.p.body.velocity = game.physics.arcade.velocityFromAngle(this.p.angle, this.state.velocity)
+        //this.updateAngulars()
+        this.updateWheelAngle()
+        this.p.body.velocity = game.physics.arcade.velocityFromAngle(this.p.angle, this.state.longVelocity)
+        this.rotate()
       },
 
       getSpeedMps: function() {
